@@ -5,15 +5,24 @@ public class Artist {
     private String biography;
     private String imageUrl;
 
-    public Artist(String name, String biography, String imageUrl) {
+    private int id;
+
+    public Artist(int id, String name, String biography, String imageUrl) {
+        this.id = id;
         this.name = name;
         this.biography = biography;
         this.imageUrl = imageUrl;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
+
+    // Add this method in the Artist class
 
     public void setName(String name) {
         this.name = name;

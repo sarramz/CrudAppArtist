@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<?import javafx.util.Callback?>
 <AnchorPane prefHeight="710.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demoapp.ArtistController">
     <children>
          <GridPane alignment="CENTER" hgap="10" layoutX="35.0" layoutY="27.0" prefHeight="400.0" prefWidth="750.0" vgap="10">
@@ -63,11 +62,13 @@
                  <TextArea fx:id="bioTextArea" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
              </children>
          </GridPane>
-           <Button fx:id="saveButton" layoutX="332.0" layoutY="457.0" onAction="#saveArtist" text="Enregistrer" />
-          <Button layoutX="477.0" layoutY="457.0" onAction="#clearFields" text="Clear" />
-          <Button fx:id="afficherButton" layoutX="603.0" layoutY="457.0" onAction="#afficherArtists" text="Afficher" />
+           <Button fx:id="saveButton" layoutX="297.0" layoutY="457.0" onAction="#saveArtist" text="Enregistrer" />
+          <Button layoutX="178.0" layoutY="457.0" onAction="#clearFields" text="Clear" />
+          <Button fx:id="afficherButton" layoutX="453.0" layoutY="457.0" onAction="#afficherArtists" text="Afficher" />
+        <Button fx:id="supprimerButton" layoutX="573.0" layoutY="457.0" onAction="#supprimerAction" text="Supprimer" />
 
-         <TableView fx:id="artistTableView" layoutY="494.0" prefHeight="256.0" prefWidth="867.0">
+
+        <TableView fx:id="artistTableView" layoutX="-7.0" layoutY="488.0" prefHeight="256.0" prefWidth="867.0">
              <columns>
                  <TableColumn prefWidth="150" text="Nom">
                      <cellValueFactory>
@@ -84,9 +85,7 @@
                          <PropertyValueFactory property="imageUrl" />
                      </cellValueFactory>
                  </TableColumn>
-                 <TableColumn  fx:id="actionColumn" prefWidth="150" text="Actions">
 
-                 </TableColumn>
              </columns>
          </TableView>
     </children>

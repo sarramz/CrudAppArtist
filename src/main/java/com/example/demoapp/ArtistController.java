@@ -78,8 +78,8 @@ public class ArtistController{
                     String imageUrl = resultSet.getString("imageUrl");
 
                     System.out.println(name + " " + biography);
-
-                    Artist artist = new Artist(name, biography, imageUrl);
+                    int id = resultSet.getInt("id");
+                    Artist artist = new Artist(id,name, biography, imageUrl);
                     artistList.add(artist);
 
                 }
@@ -118,9 +118,55 @@ public class ArtistController{
     }
 
     @FXML
-    private void supprimerAction(Artist artist) {
+    private void supprimerAction() {
+        Artist artist = artistTableView.getSelectionModel().getSelectedItem();
+        if (artist != null) {
+            try {
+                connection = DBConnexion.getConnection();
+                if (connection == null) {
+                    System.out.println("La connexion à la base de données n'est pas établie.");
+                    return;
+                }
 
+                String deleteQuery = "DELETE FROM artists WHERE id = ?";
+                PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery);
+                preparedStatement.setInt(1, artist.getId());
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Artiste supprimé avec succès !");
+                    artistList.remove(artist); // Supprimer l'artiste de la liste affichée dans la TableView
+
+                    // Supprimer également l'image du dossier uploads
+                    String imageUrl = artist.getImageUrl();
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        String imagePath = "src/main/resources/com/example/demoapp/" + imageUrl;
+                        File imageFile = new File(imagePath);
+                        if (imageFile.exists()) {
+                            if (imageFile.delete()) {
+                                System.out.println("Image supprimée avec succès !");
+                            } else {
+                                System.out.println("Impossible de supprimer l'image.");
+                            }
+                        } else {
+                            System.out.println("L'image n'existe pas.");
+                        }
+                    }
+                } else {
+                    System.out.println("Aucun artiste supprimé.");
+                }
+
+                preparedStatement.close();
+            } catch (SQLException e) {
+                System.out.println("Erreur SQL lors de la suppression de l'artiste : " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Veuillez sélectionner un artiste à supprimer.");
+        }
     }
+
 
     @FXML
     private void chooseImage() {
