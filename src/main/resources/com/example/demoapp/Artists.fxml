@@ -62,10 +62,11 @@
                  <TextArea fx:id="bioTextArea" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
              </children>
          </GridPane>
-           <Button fx:id="saveButton" layoutX="297.0" layoutY="457.0" onAction="#saveArtist" text="Enregistrer" />
-          <Button layoutX="178.0" layoutY="457.0" onAction="#clearFields" text="Clear" />
-          <Button fx:id="afficherButton" layoutX="453.0" layoutY="457.0" onAction="#afficherArtists" text="Afficher" />
-        <Button fx:id="supprimerButton" layoutX="573.0" layoutY="457.0" onAction="#supprimerAction" text="Supprimer" />
+           <Button fx:id="saveButton" layoutX="224.0" layoutY="457.0" onAction="#saveArtist" text="Enregistrer" />
+          <Button layoutX="46.0" layoutY="457.0" onAction="#clearFields" text="Clear" />
+          <Button fx:id="afficherButton" layoutX="374.0" layoutY="457.0" onAction="#afficherArtists" text="Afficher" />
+        <Button fx:id="supprimerButton" layoutX="484.0" layoutY="457.0" onAction="#supprimerAction" text="Supprimer" />
+        <Button fx:id="modifierButton" layoutX="624.0" layoutY="457.0" onAction="#modifierAction" text="Modifier" />
 
 
         <TableView fx:id="artistTableView" layoutX="-7.0" layoutY="488.0" prefHeight="256.0" prefWidth="867.0">

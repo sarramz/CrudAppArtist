@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -108,11 +109,108 @@ public class ArtistController{
         }
         loadArtists();
     }
-
     @FXML
     private void modifierAction() {
-        // Code pour modifier l'artiste sélectionné dans la TableView
+        Artist artist = artistTableView.getSelectionModel().getSelectedItem();
+        if (artist != null) {
+            // Pré-remplir les champs du formulaire avec les données de l'artiste sélectionné
+            nomTextField.setText(artist.getName());
+            bioTextArea.setText(artist.getBiography());
+            // Vous pouvez également pré-remplir l'image si besoin
+
+            // Mettre à jour l'artiste lorsque le bouton "Enregistrer" est cliqué
+            saveButton.setOnAction(event -> updateArtist(artist));
+        } else {
+            System.out.println("Veuillez sélectionner un artiste à modifier.");
+        }
     }
+    private void updateArtist(Artist artist) {
+        connection = DBConnexion.getConnection();
+        if (connection == null) {
+            System.out.println("La connexion à la base de données n'est pas établie.");
+            return;
+        }
+
+        String name = nomTextField.getText();
+        String biography = bioTextArea.getText();
+
+        if (name.isEmpty() || biography.isEmpty()) {
+            System.out.println("Veuillez remplir tous les champs.");
+            return;
+        }
+
+        // Récupérer le chemin de la nouvelle image
+        String newImagePath = imagePathLabel.getText();
+
+        // Vérifier si une nouvelle image a été sélectionnée
+        if (!newImagePath.isEmpty()) {
+            // Extraire le nom de la nouvelle image à partir du chemin complet
+            String[] pathComponents = newImagePath.split("/");
+            String newImageName = pathComponents[pathComponents.length - 1];
+
+            // Construire le chemin complet de la nouvelle image dans le répertoire uploads
+            String uploadsDirectory = "src/main/resources/com/example/demoapp/uploads/";
+            String newImageDestination = uploadsDirectory + newImageName;
+
+            try {
+                // Copier la nouvelle image vers le répertoire uploads
+                File sourceFile = new File(newImagePath.substring(5)); // Ignorer le préfixe "file:"
+                File destinationFile = new File(newImageDestination);
+                Files.copy(sourceFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Mettre à jour le chemin de l'image dans la base de données
+                String newImageUrl = "/uploads/" + newImageName;
+                String updateQuery = "UPDATE artists SET name=?, biography=?, imageUrl=? WHERE id=?";
+                PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, biography);
+                preparedStatement.setString(3, newImageUrl); // Nouveau chemin de l'image
+                preparedStatement.setInt(4, artist.getId());
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Artiste mis à jour avec succès !");
+                    clearFields();
+                    // Rafraîchir la TableView pour refléter les modifications
+                    loadArtists();
+                } else {
+                    System.out.println("Erreur lors de la mise à jour de l'artiste.");
+                }
+
+                preparedStatement.close();
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Si aucun nouvel image n'a été sélectionné, mettre à jour seulement les autres données de l'artiste
+            try {
+                String updateQuery = "UPDATE artists SET name=?, biography=? WHERE id=?";
+                PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, biography);
+                preparedStatement.setInt(3, artist.getId());
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("Artiste mis à jour avec succès !");
+                    clearFields();
+                    // Rafraîchir la TableView pour refléter les modifications
+                    loadArtists();
+                } else {
+                    System.out.println("Erreur lors de la mise à jour de l'artiste.");
+                }
+
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 
     @FXML
     private void supprimerAction() {
