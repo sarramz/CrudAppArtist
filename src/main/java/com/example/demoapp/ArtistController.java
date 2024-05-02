@@ -52,7 +52,6 @@ public class ArtistController{
     public Button boutonSupprimer;
 
 
-    // Méthode pour charger les artistes depuis la base de données
     public void loadArtists() {
         try {
             connection = DBConnexion.getConnection();
@@ -68,7 +67,6 @@ public class ArtistController{
                     PreparedStatement preparedStatement = connection.prepareStatement(query);
                     ResultSet resultSet = preparedStatement.executeQuery()) {
                 System.out.println("HOUNI" + resultSet);
-                // Clear the artistList before adding new artists
                 artistList.clear();
 
                 while (resultSet.next()) {
@@ -97,7 +95,6 @@ public class ArtistController{
     private void afficherArtists() {
 
         if (artistTableView.getColumns().isEmpty()) {
-            // Configuration des colonnes de la TableView
             TableColumn<Artist, String> nameColumn = new TableColumn<>("Nom");
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
@@ -136,9 +133,9 @@ public class ArtistController{
 
                 if (rowsAffected > 0) {
                     System.out.println("Artiste supprimé avec succès !");
-                    artistList.remove(artist); // Supprimer l'artiste de la liste affichée dans la TableView
+                    artistList.remove(artist);
 
-                    // Supprimer également l'image du dossier uploads
+
                     String imageUrl = artist.getImageUrl();
                     if (imageUrl != null && !imageUrl.isEmpty()) {
                         String imagePath = "src/main/resources/com/example/demoapp/" + imageUrl;
